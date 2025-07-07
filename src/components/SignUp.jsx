@@ -12,18 +12,30 @@ const SignUp = () => {
         const form = e.target;
         const formData = new FormData(form);
 
-        const { email, password, ...userProfile } = Object.fromEntries(formData.entries());
+        const { email, password, ...restFormData } = Object.fromEntries(formData.entries());
 
-        console.log(email, password, userProfile);
+        // const userProfile = {
+        //     email,
+        //     ...rest,
+        // }
+
+        // console.log(email, password, userProfile);
 
         // const email = formData.get('email');
         // const password = formData.get('password');
-        console.log('from sigupup 20 line', email, password);
+        console.log('from sign up  line 20', email, password);
 
         // create user in thee firebase
         createUser(email, password)
             .then(result => {
                 console.log(result.user);
+
+                const userProfile = {
+                    email,
+                    ...restFormData,
+                    creationTime: result.user?.metadata?.creationTime,
+                    lastSignInTime: result.user?.metadata?.lastSignInTime,
+                }
 
                 // save profile info in the db
                 fetch('http://localhost:3000/users', {
@@ -43,7 +55,7 @@ const SignUp = () => {
                                 showConfirmButton: false,
                                 timer: 1500
                             });
-                            console.log('alert successful',data.insertedId);
+                            console.log('alert successful', data.insertedId);
                         }
                         else {
                             console.log('didnt get insertedId', data.insertedId);
