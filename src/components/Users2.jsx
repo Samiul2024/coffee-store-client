@@ -1,30 +1,25 @@
-import axios from 'axios';
+import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { useLoaderData } from 'react-router';
-import Swal from 'sweetalert2';
 
-const Users = () => {
-    const initialUsers = useLoaderData();
-    const [users, setUsers] = useState(initialUsers);
+const Users2 = () => {
 
-//     useEffect(() => {
-//         fetch('/')
-//             .then(res => res.json())
-//             .then(data => {
-//                 console.log(data);
-//             })
-//     }, [])
-
-// useEffect(()=>{
-//     axios.get('/')
-//     .then(data=>{
-//         console.log(data.data);
-//     })
-// },[])
+    const { isPending, isError, error, data: users } = useQuery({
+        queryKey: ['users'],
+        queryFn: async () => {
+            const res = await fetch('https://v1-coffee-store-server-liard.vercel.app/coffees/users');
+            return res.json();
+        }
+    })
+    // const [users, setUsers] = useState([]);
+    // useEffect(() => {
+    // fetch('https://v1-coffee-store-server-liard.vercel.app/coffees/users')
+    //         .then(res => res.json())
+    //         .then(data => {
+    //             setUsers(data)
+    //         })
+    // }, [])
 
 
-
-    console.log(users);
     const handleDelete = (id) => {
         Swal.fire({
             title: "Are you sure?",
@@ -44,8 +39,8 @@ const Users = () => {
                     .then(data => {
                         if (data.deletedCount) {
 
-                            const remainingUsers = users.filter(user => user._id !== id);
-                            setUsers(remainingUsers);
+                            // const remainingUsers = users.filter(user => user._id !== id);
+                            // setUsers(remainingUsers);
 
                             // To Do : Delete User from firebase
 
@@ -60,11 +55,26 @@ const Users = () => {
             }
         });
     }
+    if (isPending) {
+        return <>
+            <span className="loading loading-spinner text-primary"></span>
+            <span className="loading loading-spinner text-secondary"></span>
+            <span className="loading loading-spinner text-accent"></span>
+            <span className="loading loading-spinner text-neutral"></span>
+            <span className="loading loading-spinner text-info"></span>
+            <span className="loading loading-spinner text-success"></span>
+            <span className="loading loading-spinner text-warning"></span>
+            <span className="loading loading-spinner text-error"></span>
+        </>
+    }
+    if (isError) {
+        return <p>{error.message}</p>
+    }
     return (
         <div>
-            <h2 className='text-3xl'>
+            {/* <h2 className='text-3xl'>
                 Users:{users.length}
-            </h2>
+            </h2> */}
             <div className="overflow-x-auto">
                 <table className="table">
                     {/* head */}
@@ -82,7 +92,7 @@ const Users = () => {
                     <tbody>
                         {/* row 1 */}
                         {
-                            users.map((user, index) => <tr key={user._id}>
+                            users?.map((user, index) => <tr key={user._id}>
                                 <th>
                                     {index + 1}
                                 </th>
@@ -128,4 +138,4 @@ const Users = () => {
     );
 };
 
-export default Users;
+export default Users2;

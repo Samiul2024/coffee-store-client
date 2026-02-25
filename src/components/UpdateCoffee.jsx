@@ -3,77 +3,108 @@ import { useLoaderData } from 'react-router';
 import Swal from 'sweetalert2';
 
 const UpdateCoffee = () => {
-    const {_id, name, quantity, price, taste, supplier, photo, details} = useLoaderData();
-
-    const handleUpdateCoffee = e =>{
+    const { _id, name, price, chef, taste, photo, details, supplier } = useLoaderData();
+    const handleUpdateCoffee = e => {
         e.preventDefault();
         const form = e.target;
         const formData = new FormData(form);
-        const updatedCoffee = Object.fromEntries(formData.entries())
+        const updatedCoffee = Object.fromEntries(formData.entries());
         console.log(updatedCoffee);
 
-        // send updated coffee to the db
-        fetch(`http://localhost:3000/coffees/${_id}`, {
-            method: 'PUT', 
+        // send updated coffee data to the db
+        fetch(`https://v1-coffee-store-server-liard.vercel.app/coffees/${_id}`, {
+            method: 'PUT',
             headers: {
                 'content-type': 'application/json'
-            }, 
+            },
             body: JSON.stringify(updatedCoffee)
         })
-        .then(res => res.json())
-        .then(data =>{
-            if(data.modifiedCount){
-                Swal.fire({
-                    position: "top-end",
-                    icon: "success",
-                    title: "Coffee updated successfully.",
-                    showConfirmButton: false,
-                    timer: 1500
-                  });
-            }
-        })
+            .then(res => res.json())
+            .then(data => {
+                if (data.matchedCount) {
+                    Swal.fire({
+                        position: "top-end",
+                        icon: "success",
+                        title: "YoCoffee updated Successfully!!",
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    console.log(data);
+                }
+            })
 
     }
 
     return (
         <div className='p-24'>
-            <div className='p-12 text-center space-y-4'>
-                <h1 className="text-6xl">Update Coffee</h1>
-            </div>
-            <form onSubmit={handleUpdateCoffee}>
-                <div className='grid grid-cols-1 md:grid-cols-2 gap-6'>
-                    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-                        <label className="label">Name</label>
-                        <input type="text" name='name' defaultValue={name} className="input w-full" placeholder="Coffee Name" />
-                    </fieldset>
-                    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-                        <label className="label">Quantity</label>
-                        <input type="text" name='quantity' defaultValue={quantity} className="input w-full" placeholder="Quantity Name" />
-                    </fieldset>
-                    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-                        <label className="label">Supplier</label>
-                        <input type="text" name='supplier' defaultValue={supplier} className="input w-full" placeholder="Supplier Name" />
-                    </fieldset>
-                    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-                        <label className="label">Taste</label>
-                        <input type="text" name='taste' defaultValue={taste} className="input w-full" placeholder="Taste Name" />
-                    </fieldset>
-                    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-                        <label className="label">Price</label>
-                        <input type="text" name='price' defaultValue={price} className="input w-full" placeholder="Price per Cup" />
-                    </fieldset>
-                    <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border p-4">
-                        <label className="label">Details</label>
-                        <input type="text" name='details' defaultValue={details} className="input w-full" placeholder="Details Name" />
-                    </fieldset>
-                </div>
-                <fieldset className="fieldset bg-base-200 border-base-300 rounded-box border my-6 p-4">
-                    <label className="label">Photo</label>
-                    <input type="text" name='photo' defaultValue={photo} className="input w-full" placeholder="Photo URL" />
-                </fieldset>
+            {/* <div className='p-12 text-center space-y-4'>
 
-                <input type="submit" className='btn w-full' value="Update Coffee" />
-            </form>
+                <h1 className="text-6xl">Add New Coffee</h1>
+                
+            </div> */}
+            {/* Form starts here */}
+
+            <div className="max-w-4xl mx-auto p-6 bg-base-200 rounded-lg shadow-lg">
+                <h2 className="text-3xl font-bold mb-6 text-center">Update Coffee</h2>
+
+                <form onSubmit={handleUpdateCoffee} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                    {/* Name */}
+                    <div>
+                        <label className="label font-semibold text-lg">Name</label>
+                        <input type="text" name="name" defaultValue={name} placeholder="Enter coffee name" className="input input-bordered w-full" />
+                    </div>
+
+                    {/* Chef */}
+                    <div>
+                        <label className="label font-semibold text-lg">Chef</label>
+                        <input type="text" name="chef" defaultValue={chef} placeholder="Enter coffee chef" className="input input-bordered w-full" />
+                    </div>
+
+                    {/* Supplier */}
+                    <div>
+                        <label className="label font-semibold text-lg">Supplier</label>
+                        <input type="text" name="supplier" defaultValue={supplier} placeholder="Enter coffee supplier" className="input input-bordered w-full" />
+                    </div>
+
+                    {/* Taste */}
+                    <div>
+                        <label className="label font-semibold text-lg">Taste</label>
+                        <input type="text" name="taste"
+                            defaultValue={taste} placeholder="Enter coffee taste" className="input input-bordered w-full" />
+                    </div>
+
+                    {/* Price */}
+                    <div>
+                        <label className="label font-semibold text-lg">Price</label>
+                        <input type="text" name="price" defaultValue={price} placeholder="Enter coffee Price" className="input input-bordered w-full" />
+                    </div>
+
+                    {/* Details */}
+                    <div>
+                        <label className="label font-semibold text-lg">Details</label>
+                        <input type="text" name="details" defaultValue={details} placeholder="Enter coffee details" className="input input-bordered w-full" />
+                    </div>
+
+                    {/* Photo URL - Full width */}
+                    <div className="md:col-span-2">
+                        <label className="label font-semibold text-lg">Photo</label>
+                        <input type="text" name="photo" defaultValue={photo} placeholder="Enter photo URL" className="input input-bordered w-full" />
+                    </div>
+
+                    {/* Submit Button - Full width */}
+                    <div className="md:col-span-2">
+                        <button type="submit" className="btn w-full bg-[#D2B48C] text-lg text-black hover:bg-[#c3a77c]">
+                            Update Coffee
+                        </button>
+                    </div>
+
+                </form>
+            </div>
+
+
+            {/* Form Ends here */}
+
         </div>
     );
 };

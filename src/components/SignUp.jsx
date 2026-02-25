@@ -1,6 +1,7 @@
 import React, { use } from 'react';
 import { AuthContext } from './AuthContext';
 import Swal from 'sweetalert2';
+import axios from 'axios';
 
 const SignUp = () => {
 
@@ -37,36 +38,47 @@ const SignUp = () => {
                     lastSignInTime: result.user?.metadata?.lastSignInTime,
                 }
 
-                // save profile info in the db
-                fetch('http://localhost:3000/users', {
-                    method: 'POST',
-                    headers: {
-                        'content-type': 'application/json'
-                    },
-                    body: JSON.stringify(userProfile)
+                // using axios
+                axios.post('https://v1-coffee-store-server-liard.vercel.app/coffees/users',userProfile)
+                .then(data=>{
+                    if(data.data.insertedId){
+                        console.log('data added to the database');
+                    }
+                    // console.log(data.data);
                 })
-                    .then(res => res.json())
-                    .then(data => {
-                        if (data.insertedId) {
-                            Swal.fire({
-                                position: "top-end",
-                                icon: "success",
-                                title: "Your profile has been created",
-                                showConfirmButton: false,
-                                timer: 1500
-                            });
-                            console.log('alert successful', data.insertedId);
-                        }
-                        else {
-                            console.log('didnt get insertedId', data.insertedId);
-                        }
-                    })
+
+                // save profile info in the db
+                
+                // //using fetch
+                // fetch('https://v1-coffee-store-server-liard.vercel.app/coffees/users', {
+                //     method: 'POST',
+                //     headers: {
+                //         'content-type': 'application/json'
+                //     },
+                //     body: JSON.stringify(userProfile)
+                // })
+                //     .then(res => res.json())
+                //     .then(data => {
+                //         if (data.insertedId) {
+                //             Swal.fire({
+                //                 position: "top-end",
+                //                 icon: "success",
+                //                 title: "Your profile has been created",
+                //                 showConfirmButton: false,
+                //                 timer: 1500
+                //             });
+                //             console.log('alert successful', data.insertedId);
+                //         }
+                //         else {
+                //             console.log('didnt get insertedId', data.insertedId);
+                //         }
+                //     })
 
 
             })
-            .catch(error => {
-                console.log(error);
-            })
+            // .catch(error => {
+            //     console.log(error);
+            // })
 
     }
 
